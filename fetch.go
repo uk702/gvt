@@ -176,6 +176,7 @@ func fetchRecursive(m *vendor.Manifest, fullPath string, level int) error {
 		//fmt.Println("*** path = " + path + ", Err = " + err.Error() + " ***")
 		of, _ := os.OpenFile(failFetchUrls, os.O_CREATE|os.O_APPEND, 0666)
 		defer of.Close()
+
 		of.WriteString(path + "\n")
 		return err
 	}
