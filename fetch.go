@@ -172,6 +172,11 @@ func fetchRecursive(m *vendor.Manifest, fullPath string, level int) error {
 		wc, err = GlobalDownloader.Get(repo, "", "", "")
 	}
 	if err != nil {
+		//Lilx
+		//fmt.Println("*** path = " + path + ", Err = " + err.Error() + " ***")
+		of, _ := os.OpenFile(failFetchUrls, os.O_CREATE|os.O_APPEND, 0666)
+		defer of.Close()
+		of.WriteString(path + "\n")
 		return err
 	}
 
@@ -241,9 +246,13 @@ func fetchRecursive(m *vendor.Manifest, fullPath string, level int) error {
 			}
 			if err := fetchRecursive(m, d, level+1); err != nil {
 				if strings.HasPrefix(err.Error(), "error fetching") { // I know, ok?
-					return err
+					//Lilx
+					//return err
+					continue
 				} else {
-					return fmt.Errorf("error fetching %s: %s", d, err)
+					//Lilx
+					//return fmt.Errorf("error fetching %s: %s", d, err)
+					continue
 				}
 			}
 		}
