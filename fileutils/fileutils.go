@@ -193,3 +193,11 @@ func CopyLicense(dst, src string) error {
 func mkdir(path string) error {
 	return os.MkdirAll(path, 0755)
 }
+
+// Lilx
+// 检查文件或目录是否存在
+// 如果由 filename 指定的文件或目录存在则返回 true，否则返回 false
+func IsFileExist(filename string) bool {
+	_, err := os.Stat(filename)
+	return err == nil || os.IsExist(err)
+}

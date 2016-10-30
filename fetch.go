@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/url"
 	"os"
@@ -92,8 +93,35 @@ func fetch(path string) error {
 		return fmt.Errorf("could not load manifest: %v", err)
 	}
 
+	if path == "fix" {
+		fmt.Println("--- fix fail urls ---")
+
+		// Lilx
+		// 如果存在 failFetchUrls 这个文件，就单独下载失败的 url
+		if fileutils.IsFileExist(failFetchUrls) {
+			// 读入各个url
+			content, err := ioutil.ReadFile(failFetchUrls)
+			if err == nil {
+				// 删除 failFetchUrls
+				os.Remove(failFetchUrls)
+
+				lines := strings.Split(string(content), "\n")
+				for _, line := range lines {
+					if len(strings.TrimSpace(line)) > 0 {
+						fetchRecursive(m, line, 0)
+					}
+				}
+			}
+
+		}
+
+		return nil
+	}
+
 	fetchRoot = stripscheme(path)
-	return fetchRecursive(m, path, 0)
+	err = fetchRecursive(m, path, 0)
+
+	return err
 }
 
 func fetchRecursive(m *vendor.Manifest, fullPath string, level int) error {
@@ -172,8 +200,8 @@ func fetchRecursive(m *vendor.Manifest, fullPath string, level int) error {
 		wc, err = GlobalDownloader.Get(repo, "", "", "")
 	}
 	if err != nil {
-		//Lilx
-		//fmt.Println("*** path = " + path + ", Err = " + err.Error() + " ***")
+		// Lilx
+		// 如下载失败，则将 url 加入到 failFetchUrls 中
 		of, _ := os.OpenFile(failFetchUrls, os.O_CREATE|os.O_APPEND, 0666)
 		defer of.Close()
 
