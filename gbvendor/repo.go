@@ -13,7 +13,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/FiloSottile/gvt/fileutils"
+	"github.com/uk702/gvt/fileutils"
 )
 
 // RemoteRepo describes a remote dvcs repository.

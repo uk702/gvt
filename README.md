@@ -1,6 +1,6 @@
 # gvt, the Go vendoring tool
-[![GoDoc](https://godoc.org/github.com/FiloSottile/gvt?status.svg)](https://godoc.org/github.com/FiloSottile/gvt)
-[![Build Status](https://travis-ci.org/FiloSottile/gvt.svg?branch=master)](https://travis-ci.org/FiloSottile/gvt)
+[![GoDoc](https://godoc.org/github.com/uk702/gvt?status.svg)](https://godoc.org/github.com/uk702/gvt)
+[![Build Status](https://travis-ci.org/uk702/gvt.svg?branch=master)](https://travis-ci.org/uk702/gvt)
 
 `gvt` is a simple vendoring tool made for Go native vendoring (aka
 [GO15VENDOREXPERIMENT](https://docs.google.com/document/d/1Bz5-UB7g2uPBdOx-rw5t9MxJwkfpx90cqG9AFL0JAYo/edit)),
@@ -11,7 +11,7 @@ reproducible builds.
 
   * No need to learn a new tool or format!  
     You already know how to use `gvt`: just run `gvt fetch` when and like you would run `go get`.
-    You can imagine what `gvt update` and `gvt delete` do. In addition, `gvt` [also allows](https://godoc.org/github.com/FiloSottile/gvt#hdr-Fetch_a_remote_dependency)
+    You can imagine what `gvt update` and `gvt delete` do. In addition, `gvt` [also allows](https://godoc.org/github.com/uk702/gvt#hdr-Fetch_a_remote_dependency)
     fetching specific commits or branch versions in packages, and fully accommodates private repos. 
 
   * No need to change how you build your project!  
@@ -35,7 +35,7 @@ reproducible builds.
 With a [correctly configured](https://golang.org/doc/code.html#GOPATH) Go installation:
 
 ```
-go get -u github.com/FiloSottile/gvt
+go get -u github.com/uk702/gvt
 ```
 
 ## Basic usage
@@ -99,7 +99,7 @@ $ git add main.go vendor/ && git commit
 
 `fetch` offers options to download specific versions, and there are `update`, `list` and `delete` commands that do what you would expect.
 
-View the full manual on GoDoc: https://godoc.org/github.com/FiloSottile/gvt
+View the full manual on GoDoc: https://godoc.org/github.com/uk702/gvt
 
 ## Alternative: not checking in vendored source
 
