@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/FiloSottile/gvt/fileutils"
+	"github.com/uk702/gvt/fileutils"
 
-	"github.com/FiloSottile/gvt/gbvendor"
+	"github.com/uk702/gvt/gbvendor"
 )
 
 var (
