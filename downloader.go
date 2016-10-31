@@ -37,7 +37,7 @@ func init() {
 }
 
 // Get returns a cached WorkingCopy, or runs RemoteRepo.Checkout
-func (d *Downloader) Get(repo vendor.RemoteRepo, branch, tag, revision string) (vendor.WorkingCopy, error) {
+func (d *Downloader) Get(repo vendor.RemoteRepo, branch, tag, revision string, verbose bool) (vendor.WorkingCopy, error) {
 	key := cacheKey{
 		url: repo.URL(), repoType: repo.Type(),
 		branch: branch, tag: tag, revision: revision,
@@ -54,7 +54,7 @@ func (d *Downloader) Get(repo vendor.RemoteRepo, branch, tag, revision string) (
 	d.wcs[key] = entry
 	d.wcsMu.Unlock()
 
-	entry.v, entry.err = repo.Checkout(branch, tag, revision)
+	entry.v, entry.err = repo.Checkout(branch, tag, revision, verbose)
 	entry.wg.Done()
 	return entry.v, entry.err
 }

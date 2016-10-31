@@ -22,6 +22,9 @@ var (
 	insecure  bool // Allow the use of insecure protocols
 	tests     bool
 	all       bool
+	
+	// Lilx
+	verbose   bool
 )
 
 func addFetchFlags(fs *flag.FlagSet) {
@@ -32,6 +35,7 @@ func addFetchFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&insecure, "precaire", false, "allow the use of insecure protocols")
 	fs.BoolVar(&tests, "t", false, "fetch _test.go files and testdata")
 	fs.BoolVar(&all, "a", false, "fetch all files and subfolders")
+	fs.BoolVar(&verbose, "v", false, "verbose show checkout progress")
 }
 
 var cmdFetch = &Command{
@@ -195,9 +199,9 @@ func fetchRecursive(m *vendor.Manifest, fullPath string, level int) error {
 
 	var wc vendor.WorkingCopy
 	if repo.URL() == rootRepoURL {
-		wc, err = GlobalDownloader.Get(repo, branch, tag, revision)
+		wc, err = GlobalDownloader.Get(repo, branch, tag, revision, verbose)
 	} else {
-		wc, err = GlobalDownloader.Get(repo, "", "", "")
+		wc, err = GlobalDownloader.Get(repo, "", "", "", verbose)
 	}
 	if err != nil {
 		// Lilx

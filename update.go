@@ -75,7 +75,7 @@ Flags:
 				return fmt.Errorf("could not determine repository for import %q", d.Importpath)
 			}
 
-			wc, err := GlobalDownloader.Get(repo, d.Branch, "", "")
+			wc, err := GlobalDownloader.Get(repo, d.Branch, "", "", false)
 			if err != nil {
 				return err
 			}

@@ -22,7 +22,7 @@ type RemoteRepo interface {
 	// Checkout checks out a specific branch, tag, or revision.
 	// The interpretation of these three values is impementation
 	// specific.
-	Checkout(branch, tag, revision string) (WorkingCopy, error)
+	Checkout(branch, tag, revision string, verbose bool) (WorkingCopy, error)
 
 	// URL returns the URL the clone was/will be taken from.
 	URL() string
@@ -311,7 +311,7 @@ func (g *gitrepo) Type() string {
 // Checkout fetchs the remote branch, tag, or revision. If the branch is blank,
 // then the default remote branch will be used. If the branch is "HEAD" and
 // revision is empty, an impossible update is assumed.
-func (g *gitrepo) Checkout(branch, tag, revision string) (WorkingCopy, error) {
+func (g *gitrepo) Checkout(branch, tag, revision string, verbose bool) (WorkingCopy, error) {
 	if branch == "HEAD" && revision == "" {
 		return nil, fmt.Errorf("cannot update %q as it has been previously fetched with -tag or -revision. Please use gvt delete then fetch again.", g.url)
 	}
@@ -329,10 +329,9 @@ func (g *gitrepo) Checkout(branch, tag, revision string) (WorkingCopy, error) {
 		path: dir,
 	}
 
-	quiet := false
+	quiet := !verbose
 	args := []string{
 		"clone",
-		"-q", // silence progress report to stderr
 		g.url,
 		dir,
 	}
@@ -347,11 +346,11 @@ func (g *gitrepo) Checkout(branch, tag, revision string) (WorkingCopy, error) {
 	if revision == "" {
 		args = append(args, "--depth", "1")
 	}
-
+	
 	if quiet {
 		err = runQuiet("git", args...)
 	} else {
-		_, err = run("git", args...)
+		err = runOut(os.Stderr, "git", args...)
 	}
 	if err != nil {
 		wc.Destroy()
@@ -417,7 +416,7 @@ type hgrepo struct {
 func (h *hgrepo) URL() string  { return h.url }
 func (h *hgrepo) Type() string { return "hg" }
 
-func (h *hgrepo) Checkout(branch, tag, revision string) (WorkingCopy, error) {
+func (h *hgrepo) Checkout(branch, tag, revision string, verbose bool) (WorkingCopy, error) {
 	if !atMostOne(tag, revision) {
 		return nil, fmt.Errorf("only one of tag or revision may be supplied")
 	}
@@ -493,7 +492,7 @@ func (b *bzrrepo) Type() string {
 	return "bzr"
 }
 
-func (b *bzrrepo) Checkout(branch, tag, revision string) (WorkingCopy, error) {
+func (b *bzrrepo) Checkout(branch, tag, revision string, verbose bool) (WorkingCopy, error) {
 	if !atMostOne(tag, revision) {
 		return nil, fmt.Errorf("only one of tag or revision may be supplied")
 	}
