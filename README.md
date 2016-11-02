@@ -20,7 +20,7 @@ gvt fetch fix
   
 2) gvt fetch -a github.com/spf13/hugo  
 下载所有文件，这当然就包括测试文件了。  
-如果你发现 gvt fetch xxx 下载“不完全”时，可改成 gvt fetch -a xxx 这个命令  
+如果你发现 gvt fetch xxx 下载“不完全”时，可改用 gvt fetch -a xxx 这个命令再下载  
   
 3) gvt fetch -a -v github.com/spf13/hugo  
 下载所有文件，下载时显示 git clone 的进度，如  

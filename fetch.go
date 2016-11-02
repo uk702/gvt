@@ -22,9 +22,9 @@ var (
 	insecure  bool // Allow the use of insecure protocols
 	tests     bool
 	all       bool
-	
+
 	// Lilx
-	verbose   bool
+	verbose bool
 )
 
 func addFetchFlags(fs *flag.FlagSet) {
@@ -112,7 +112,10 @@ func fetch(path string) error {
 				lines := strings.Split(string(content), "\n")
 				for _, line := range lines {
 					if len(strings.TrimSpace(line)) > 0 {
-						fetchRecursive(m, line, 0)
+						err = fetchRecursive(m, line, 0)
+						if err != nil {
+							fmt.Println(err)
+						}
 					}
 				}
 			}
@@ -190,6 +193,14 @@ func fetchRecursive(m *vendor.Manifest, fullPath string, level int) error {
 
 	repo, extra, err := GlobalDownloader.DeduceRemoteRepo(fullPath, insecure)
 	if err != nil {
+		// Lilx
+		// 如下载失败，则将 url 加入到 failFetchUrls 中
+		// 测试 gvt fetch -a -v golang.org/x/text/transform
+		of, _ := os.OpenFile(failFetchUrls, os.O_CREATE|os.O_APPEND, 0666)
+		defer of.Close()
+
+		of.WriteString(path + "\n")
+
 		return err
 	}
 

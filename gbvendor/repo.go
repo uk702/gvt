@@ -346,7 +346,7 @@ func (g *gitrepo) Checkout(branch, tag, revision string, verbose bool) (WorkingC
 	if revision == "" {
 		args = append(args, "--depth", "1")
 	}
-	
+
 	if quiet {
 		err = runQuiet("git", args...)
 	} else {
