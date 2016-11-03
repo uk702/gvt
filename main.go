@@ -85,7 +85,8 @@ var (
 
 	// Lilx
 	failFetchUrls string
-	importPath     string
+	mirrorUrls    string
+	importPath    string
 )
 
 func init() {
@@ -96,7 +97,8 @@ func init() {
 	vendorDir = filepath.Join(wd, "vendor")
 	manifestFile = filepath.Join(vendorDir, "manifest")
 	failFetchUrls = filepath.Join(vendorDir, "failFetchUrls")
-	
+	mirrorUrls = "mirrorUrls"
+
 	var srcTree []string
 	for _, p := range filepath.SplitList(build.Default.GOPATH) {
 		srcTree = append(srcTree, filepath.Join(p, "src")+string(filepath.Separator))
