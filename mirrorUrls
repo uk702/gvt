@@ -9,3 +9,5 @@ camlistore.org/pkg/googlestorage github.com/weaveworks/cortex/tree/master/vendor
 github.com/cloudflare/cfssl/ github.com/cloudflare/cfssl/tree/master/
 github.com/gogo/protobuf/ github.com/gogo/protobuf/tree/master/
 github.com/golang/protobuf/ github.com/golang/protobuf/tree/master/
+
+gopkg.in/check github.com/go-check/check

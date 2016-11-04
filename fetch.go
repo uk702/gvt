@@ -108,7 +108,7 @@ func fetch(path string) error {
 			lines := strings.Split(string(content), "\n")
 			for _, line := range lines {
 				if len(strings.TrimSpace(line)) > 0 {
-					//fmt.Println(line)
+					// fmt.Println(line)
 					str := strings.Split(line, " ")
 					if len(str) == 2 {
 						dst := strings.TrimSpace(str[1])
@@ -118,6 +118,15 @@ func fetch(path string) error {
 			}
 		}
 	}
+
+	// replaceMirrorPath("gopkg.in/check")
+	// replaceMirrorPath("gopkg.in/check.v1")
+	// replaceMirrorPath("gopkg.in/check.v1/")
+	// replaceMirrorPath("gopkg.in/check.v1/xxxx")
+	// replaceMirrorPath("gopkg.in/check.v1-unstable/xxxx")
+	// replaceMirrorPath("gopkg.in/check/a.v1/")
+	// replaceMirrorPath("gopkg.in/check-v1/a.v1/")
+	replaceMirrorPath("golang.org/x/sys/unix")
 
 	if path == "fix" {
 		fmt.Println("--- fix fail urls ---")
@@ -133,6 +142,8 @@ func fetch(path string) error {
 
 				lines := strings.Split(string(content), "\n")
 				for _, line := range lines {
+					// fmt.Println(line)
+
 					if len(strings.TrimSpace(line)) > 0 {
 						err = fetchRecursive(m, line, 0)
 						if err != nil {
@@ -153,13 +164,41 @@ func fetch(path string) error {
 	return err
 }
 
-func replaceMirrorPath(fullPath, branch string) (string, string) {
+func replaceMirrorPath(fullPath string) (string, string) {
+	plen := len(fullPath)
+	branch := ""
+
+	// fmt.Println("in: path =", fullPath, ", branch =", branch)
 	for k, v := range mapMirrorUrl {
+		alen := len(k)
+
+		hasVersion := false
 		if strings.HasPrefix(fullPath, k) {
-			fullPath = strings.Replace(fullPath, k, v, 1)
+			// fmt.Println("===", k, v, "====")
+
+			if plen > (alen + 1) {
+				if fullPath[alen] == '.' && fullPath[alen+1] == 'v' {
+					i := alen + 1
+					for i < plen && fullPath[i] != '/' {
+						i = i + 1
+					}
+
+					hasVersion = true
+					branch = fullPath[alen+1 : i]
+					fullPath = v + fullPath[i:]
+				}
+			}
+
+			if !hasVersion {
+				if (alen == plen) || (k[alen-1] == '/') || (fullPath[alen] == '/') {
+					fullPath = strings.Replace(fullPath, k, v, 1)
+					branch = ""
+				}
+			}
 		}
 	}
 
+	// fmt.Println("out: path =", fullPath, ", branch =", branch)
 	return fullPath, branch
 }
 
@@ -222,7 +261,7 @@ func fetchRecursive(m *vendor.Manifest, fullPath string, level int) error {
 	}
 
 	// Find and download the repository
-	replacePathWithMirror, replaceBranch := replaceMirrorPath(fullPath, branch)
+	replacePathWithMirror, replaceBranch := replaceMirrorPath(fullPath)
 	fmt.Println("replacePathWithMirror = " + replacePathWithMirror)
 	repo, extra, err := GlobalDownloader.DeduceRemoteRepo(replacePathWithMirror, insecure)
 	if err != nil {
@@ -243,9 +282,13 @@ func fetchRecursive(m *vendor.Manifest, fullPath string, level int) error {
 
 	var wc vendor.WorkingCopy
 	if repo.URL() == rootRepoURL {
+		if branch != "" {
+			replaceBranch = branch
+		}
+
 		wc, err = GlobalDownloader.Get(repo, replaceBranch, tag, revision, verbose)
 	} else {
-		wc, err = GlobalDownloader.Get(repo, "", "", "", verbose)
+		wc, err = GlobalDownloader.Get(repo, replaceBranch, "", "", verbose)
 	}
 	if err != nil {
 		// Lilx
