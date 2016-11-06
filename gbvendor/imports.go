@@ -40,6 +40,7 @@ func ParseImports(root, vendorRoot, vendorPrefix string, tests, all bool) (map[s
 
 		fs := token.NewFileSet()
 		f, err := parser.ParseFile(fs, p, nil, parser.ImportsOnly)
+
 		if err != nil {
 			return err
 		}

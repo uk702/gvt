@@ -4,10 +4,13 @@ import (
 	"flag"
 	"fmt"
 	"go/build"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/uk702/gvt/fileutils"
 )
 
 var fs = flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
@@ -16,6 +19,7 @@ func init() {
 	fs.Usage = func() {}
 }
 
+// Command data struct
 type Command struct {
 	Name      string
 	UsageLine string
@@ -26,6 +30,7 @@ type Command struct {
 }
 
 var commands = []*Command{
+	cmdInit,
 	cmdFetch,
 	cmdRestore,
 	cmdUpdate,
@@ -82,6 +87,7 @@ func main() {
 
 var (
 	vendorDir, manifestFile string
+	srcTree                 []string
 
 	// Lilx
 	failFetchUrls string
@@ -99,7 +105,6 @@ func init() {
 	failFetchUrls = filepath.Join(vendorDir, "failFetchUrls")
 	mirrorUrls = "mirrorUrls"
 
-	var srcTree []string
 	for _, p := range filepath.SplitList(build.Default.GOPATH) {
 		srcTree = append(srcTree, filepath.Join(p, "src")+string(filepath.Separator))
 	}
@@ -115,5 +120,26 @@ func init() {
 	}
 	if build.Default.GOPATH == "" || len(srcTree) == pathMismatch {
 		log.Println("WARNING: for go vendoring to work your project needs to be somewhere under $GOPATH/src/")
+	}
+
+	// Lilx
+	// 读入 mirrorUrls
+	mapMirrorUrl = make(map[string]string, 30)
+	if fileutils.IsFileExist(mirrorUrls) {
+		// 读入各个url
+		content, err := ioutil.ReadFile(mirrorUrls)
+		if err == nil {
+			lines := strings.Split(string(content), "\n")
+			for _, line := range lines {
+				if len(strings.TrimSpace(line)) > 0 {
+					// fmt.Println(line)
+					str := strings.Split(line, " ")
+					if len(str) == 2 {
+						dst := strings.TrimSpace(str[1])
+						mapMirrorUrl[str[0]] = dst
+					}
+				}
+			}
+		}
 	}
 }

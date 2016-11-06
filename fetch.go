@@ -98,27 +98,6 @@ func fetch(path string) error {
 		return fmt.Errorf("could not load manifest: %v", err)
 	}
 
-	// Lilx
-	// 读入 mirrorUrls
-	mapMirrorUrl = make(map[string]string, 30)
-	if fileutils.IsFileExist(mirrorUrls) {
-		// 读入各个url
-		content, err := ioutil.ReadFile(mirrorUrls)
-		if err == nil {
-			lines := strings.Split(string(content), "\n")
-			for _, line := range lines {
-				if len(strings.TrimSpace(line)) > 0 {
-					// fmt.Println(line)
-					str := strings.Split(line, " ")
-					if len(str) == 2 {
-						dst := strings.TrimSpace(str[1])
-						mapMirrorUrl[str[0]] = dst
-					}
-				}
-			}
-		}
-	}
-
 	// replaceMirrorPath("gopkg.in/check")
 	// replaceMirrorPath("gopkg.in/check.v1")
 	// replaceMirrorPath("gopkg.in/check.v1/")
@@ -262,7 +241,8 @@ func fetchRecursive(m *vendor.Manifest, fullPath string, level int) error {
 
 	// Find and download the repository
 	replacePathWithMirror, replaceBranch := replaceMirrorPath(fullPath)
-	fmt.Println("replacePathWithMirror = " + replacePathWithMirror)
+	// fmt.Println("replacePathWithMirror = " + replacePathWithMirror)
+
 	repo, extra, err := GlobalDownloader.DeduceRemoteRepo(replacePathWithMirror, insecure)
 	if err != nil {
 		// Lilx

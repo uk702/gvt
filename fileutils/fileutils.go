@@ -76,6 +76,8 @@ func ShouldSkip(path string, info os.FileInfo, tests, all bool) bool {
 // Copypath copies the contents of src to dst, excluding any file that is not
 // relevant to the Go compiler.
 func Copypath(dst string, src string, tests, all bool) error {
+	// fmt.Println("Copy:", src, "=>", dst)
+
 	err := filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
