@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"runtime"
 
 	"github.com/uk702/gvt/fileutils"
 )
@@ -103,7 +104,27 @@ func init() {
 	vendorDir = filepath.Join(wd, "vendor")
 	manifestFile = filepath.Join(vendorDir, "manifest")
 	failFetchUrls = filepath.Join(vendorDir, "failFetchUrls")
+	
+	// Lilx
+	// 读取 mirrorUrls，如果当前目录下有这个文件，则用当前目录的，
+	// 否则，尝试用户目录下的
 	mirrorUrls = "mirrorUrls"
+	hasMirrorUrls := false
+	home := ""
+	if fileutils.IsFileExist(mirrorUrls) {
+		hasMirrorUrls = true
+	} else {
+		if runtime.GOOS == "windows" {
+			home = "C:" + os.Getenv("HOMEPATH")
+		} else {
+			home = os.Getenv("HOME")
+		}
+
+		mirrorUrls = home + "/mirrorUrls"
+		if fileutils.IsFileExist(mirrorUrls) {
+			hasMirrorUrls = true
+		}
+	}
 
 	for _, p := range filepath.SplitList(build.Default.GOPATH) {
 		srcTree = append(srcTree, filepath.Join(p, "src")+string(filepath.Separator))
@@ -125,7 +146,7 @@ func init() {
 	// Lilx
 	// 读入 mirrorUrls
 	mapMirrorUrl = make(map[string]string, 30)
-	if fileutils.IsFileExist(mirrorUrls) {
+	if hasMirrorUrls {
 		// 读入各个url
 		content, err := ioutil.ReadFile(mirrorUrls)
 		if err == nil {

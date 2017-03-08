@@ -74,7 +74,9 @@ Flags:
 	Run: func(args []string) error {
 		switch len(args) {
 		case 0:
-			return fmt.Errorf("fetch: import path missing")
+            path := "fix"
+			return fetch(path)
+			// return fmt.Errorf("fetch: import path missing")
 		case 1:
 			path := args[0]
 			return fetch(path)
@@ -105,7 +107,7 @@ func fetch(path string) error {
 	// replaceMirrorPath("gopkg.in/check.v1-unstable/xxxx")
 	// replaceMirrorPath("gopkg.in/check/a.v1/")
 	// replaceMirrorPath("gopkg.in/check-v1/a.v1/")
-	replaceMirrorPath("golang.org/x/sys/unix")
+	// replaceMirrorPath("golang.org/x/sys/unix")
 
 	if path == "fix" {
 		fmt.Println("--- fix fail urls ---")
@@ -183,6 +185,11 @@ func replaceMirrorPath(fullPath string) (string, string) {
 
 func fetchRecursive(m *vendor.Manifest, fullPath string, level int) error {
 	path := stripscheme(fullPath)
+
+	// Lilx
+	if strings.HasPrefix(fullPath, "\\vendor") {
+		return nil
+	}
 
 	// Don't even bother the user about skipping packages we just fetched
 	for _, p := range fetchedToday {

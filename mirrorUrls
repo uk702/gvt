@@ -1,8 +1,8 @@
 golang.org/x/ github.com/golang/
-google.golang.org/grpc github.com/grpc/grpc-go
 google.golang.org/appengine github.com/golang/appengine
-google.golang.org/api/ github.com/google/google-api-go-client/tree/master/
-cloud.google.com/go/ github.com/GoogleCloudPlatform/google-cloud-go/tree/master/
+google.golang.org/grpc github.com/grpc/grpc-go
+google.golang.org/api/ github.com/google/google-api-go-client/
+cloud.google.com/go/ github.com/GoogleCloudPlatform/google-cloud-go/
 go4.org/ github.com/camlistore/go4/
 launchpad.net/gocheck github.com/go-check/check
 camlistore.org/pkg/googlestorage github.com/weaveworks/cortex/tree/master/vendor/camlistore.org/pkg/googlestorage

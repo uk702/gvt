@@ -171,7 +171,8 @@ func ReadManifest(path string) (*Manifest, error) {
 	var m Manifest
 	d := json.NewDecoder(f)
 	if err := d.Decode(&m); err != nil {
-		return nil, err
+		return new(Manifest), nil
+		// return nil, err
 	}
 
 	// Pass all dependencies through AddDependency to detect overlap
