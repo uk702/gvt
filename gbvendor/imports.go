@@ -23,6 +23,7 @@ func ParseImports(root, vendorRoot, vendorPrefix string, tests, all bool) (map[s
 	pkgs := make(map[string]bool)
 
 	var walkFn = func(p string, info os.FileInfo, err error) error {
+		// Lilx，如果有的文件 parse 出错，比如 bad.go，则继续
 		if err != nil {
 			return err
 		}

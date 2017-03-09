@@ -251,6 +251,16 @@ func fetchRecursive(m *vendor.Manifest, fullPath string, level int) error {
 	// fmt.Println("replacePathWithMirror = " + replacePathWithMirror)
 
 	repo, extra, err := GlobalDownloader.DeduceRemoteRepo(replacePathWithMirror, insecure)
+	if (err != nil) {
+		fmt.Println("download " + path + " fail, retry.")
+    	repo, extra, err = GlobalDownloader.DeduceRemoteRepo(replacePathWithMirror, insecure)
+
+		if (err != nil) {
+			fmt.Println("download " + path + " fail, retry.")
+			repo, extra, err = GlobalDownloader.DeduceRemoteRepo(replacePathWithMirror, insecure)
+		}
+	}
+
 	if err != nil {
 		// Lilx
 		// 如下载失败，则将 url 加入到 failFetchUrls 中
@@ -274,9 +284,28 @@ func fetchRecursive(m *vendor.Manifest, fullPath string, level int) error {
 		}
 
 		wc, err = GlobalDownloader.Get(repo, replaceBranch, tag, revision, verbose)
+		if (err != nil) {
+			fmt.Println("download " + path + " fail, retry.")
+			wc, err = GlobalDownloader.Get(repo, replaceBranch, tag, revision, verbose)
+
+			if (err != nil) {
+				fmt.Println("download " + path + " fail, retry.")
+				wc, err = GlobalDownloader.Get(repo, replaceBranch, tag, revision, verbose)
+			}
+		}
 	} else {
 		wc, err = GlobalDownloader.Get(repo, replaceBranch, "", "", verbose)
+		if (err != nil) {
+			fmt.Println("download " + path + " fail, retry.")
+			wc, err = GlobalDownloader.Get(repo, replaceBranch, "", "", verbose)
+
+			if (err != nil) {
+				fmt.Println("download " + path + " fail, retry.")
+				wc, err = GlobalDownloader.Get(repo, replaceBranch, "", "", verbose)
+			}
+		}
 	}
+	
 	if err != nil {
 		// Lilx
 		// 如下载失败，则将 url 加入到 failFetchUrls 中

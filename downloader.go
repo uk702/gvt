@@ -44,9 +44,11 @@ func (d *Downloader) Get(repo vendor.RemoteRepo, branch, tag, revision string, v
 	}
 	d.wcsMu.Lock()
 	if entry, ok := d.wcs[key]; ok {
-		d.wcsMu.Unlock()
-		entry.wg.Wait()
-		return entry.v, entry.err
+		if (entry.err == nil) {
+			d.wcsMu.Unlock()
+			entry.wg.Wait()
+			return entry.v, entry.err
+		}
 	}
 
 	entry := &cacheEntry{}

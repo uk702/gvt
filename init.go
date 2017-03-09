@@ -45,9 +45,12 @@ var cmdInit = &Command{
 			}
 
 			// 已经存在于 vendor 目录，跳过
-			if fileutils.IsFileExist(filepath.Join(vendorDir, d)) {
-				// fmt.Println(filepath.Join(vendorDir, d)+"is exist, skip ", d)
-				continue
+            fp := filepath.Join(vendorDir, d)
+			if fileutils.IsFileExist(fp) {
+				if m, _ := filepath.Glob(fp + "/*.go"); len(m) > 0 {
+					// fmt.Println(filepath.Join(vendorDir, d)+"is exist, skip ", d)
+					continue
+				}
 			}
 
 			// 检查是否已经是源代码树中的一部分

@@ -29,6 +29,11 @@ var licenseFiles = []string{
 func ShouldSkip(path string, info os.FileInfo, tests, all bool) bool {
 	name := filepath.Base(path)
 
+	// Lilx
+	if strings.Index(path, "proto") >= 0  {
+		return false
+	}
+	
 	relevantFile := false
 	for _, ext := range goFileTypes {
 		if strings.HasSuffix(name, ext) {
@@ -62,7 +67,9 @@ func ShouldSkip(path string, info os.FileInfo, tests, all bool) bool {
 	case !tests && name == "_testdata" && info.IsDir():
 		skip = true
 	case !tests && name == "testdata" && info.IsDir():
-		skip = true
+		if !strings.HasPrefix(path, "github.com/golang/protobuf/proto/testdata") {
+			skip = true
+		}
 	case !tests && strings.HasSuffix(name, "_test.go") && !info.IsDir():
 		skip = true
 
