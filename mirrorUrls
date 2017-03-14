@@ -6,7 +6,6 @@ google.golang.org/genproto github.com/google/go-genproto
 cloud.google.com/go/ github.com/GoogleCloudPlatform/google-cloud-go/
 go4.org/ github.com/camlistore/go4/
 launchpad.net/gocheck github.com/go-check/check
-camlistore.org/pkg/googlestorage github.com/weaveworks/cortex/tree/master/vendor/camlistore.org/pkg/googlestorage
 github.com/cloudflare/cfssl/ github.com/cloudflare/cfssl/
 
 gopkg.in/check github.com/go-check/check
